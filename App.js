@@ -1,16 +1,20 @@
 import React, {Component} from 'react';
 import { StyleSheet, ImageBackground, Image, View, PanResponder, Animated, Dimensions } from 'react-native';
+import Falling from './Fall';
 
-
-
+const { width } = Dimensions.get("window")
 
 export default class App extends React.Component {
   
+  
+
+  //constructor to move basket
   constructor(props) {
     super(props);
   
     this.state = {
       pan: new Animated.ValueXY()
+     
     };
   }
   
@@ -50,13 +54,15 @@ export default class App extends React.Component {
 
     // Calculate the transform property and set it as a value for our style which we add below to the Animated.View component
     let imageStyle = {transform: [{translateX}, {translateY}]};
+    let fall = {transform:[ {translateY}]};
 
     return (
       <View style={styles.container}>
         <ImageBackground source={require('./src/BackgroundFruit.jpg')}
           style={styles.BackgroundImage}>
+          <Falling></Falling>
           <Animated.View style={imageStyle}{...this._panResponder.panHandlers}>
-          <Image source= {require('./src/basket.png')} style={{top: 600, left: 200}}/>
+            <Image source= {require('./src/basket.png')} style={{top: 600, left: 200}}/>
           </Animated.View>
         </ImageBackground>
       </View>
