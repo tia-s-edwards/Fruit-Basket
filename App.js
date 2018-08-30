@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, ImageBackground, Image, View, PanResponder, Animated, Dimensions } from 'react-native';
+import { StyleSheet, ImageBackground, Image, View, Text, PanResponder, Animated, Dimensions } from 'react-native';
 import Falling from './Fall';
 
 const { width } = Dimensions.get("window")
@@ -62,6 +62,7 @@ export default class App extends React.Component {
           style={styles.BackgroundImage}>
           <Falling></Falling>
           <Animated.View style={imageStyle}{...this._panResponder.panHandlers}>
+
             <Image source= {require('./src/basket.png')} style={{top: 600, left: 200}}/>
           </Animated.View>
         </ImageBackground>
@@ -89,6 +90,13 @@ const styles = StyleSheet.create({
     
 
   },
+  textStyle: {
+    flex:1,
+    top: 50,
+    left: 200,
+    alignItems:'center',
+    justifyContent: 'center',
+  }
 
 
 
