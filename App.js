@@ -1,55 +1,71 @@
 import React, {Component} from 'react';
-import { StyleSheet, ImageBackground, Image, View, PanResponder, Animated } from 'react-native';
+import { StyleSheet, ImageBackground, Image, View, PanResponder, Animated, Dimensions } from 'react-native';
+
+
 
 
 export default class App extends React.Component {
+  
+  constructor(props) {
+    super(props);
+  
+    this.state = {
+      pan: new Animated.ValueXY()
+    };
+  }
+  
+  
+  componentWillMount() {
+    this._panResponder = PanResponder.create({
+      onMoveShouldSetResponderCapture: () => true,
+      onMoveShouldSetPanResponderCapture: () => true,
+  
+      // Initially, set the value of x and y to 0 (the center of the screen)
+      onPanResponderGrant: (e, gestureState) => {
+        // Set the initial value to the current state
+        this.state.pan.setOffset({x: this.state.pan.x._value, y: this.state.pan.y._value});
+        this.state.pan.setValue({x: 0, y: 0});
+    
+      },
+  
+      // When we drag/pan the object, set the delate to the states pan position
+      onPanResponderMove: Animated.event([
+        null, {dx: this.state.pan.x, dy: this.state.pan.y},
+      ]),
+  
+      onPanResponderRelease: (e, {vx, vy}) => {
+        this.state.pan.flattenOffset();
+      }
+    });
+  }
+  
+  
+  
   render() {
+    // Destructure the value of pan from the state
+    let { pan } = this.state;
+
+    // Calculate the x and y transform from the pan value
+    let [translateX, translateY] = [pan.x, pan.y];
+
+    // Calculate the transform property and set it as a value for our style which we add below to the Animated.View component
+    let imageStyle = {transform: [{translateX}, {translateY}]};
+
     return (
       <View style={styles.container}>
         <ImageBackground source={require('./src/BackgroundFruit.jpg')}
           style={styles.BackgroundImage}>
+          <Animated.View style={imageStyle}{...this._panResponder.panHandlers}>
           <Image source= {require('./src/basket.png')} style={{top: 600, left: 200}}/>
+          </Animated.View>
         </ImageBackground>
       </View>
       
     );
   }
 }
-  class Draggable extends Component {
-    constructor() {
-      super();
-      this.state = {
-        pan: new Animated.ValueXY()
-      };
-    }
   
-    componentWillMount() {
-      // Add a listener for the delta value change
-      this._val = { x:0, y:0 }
-      this.state.pan.addListener((value) => this._val = value);
-      // Initialize PanResponder with move handling
-      this.panResponder = PanResponder.create({
-        onStartShouldSetPanResponder: (e, gesture) => true,
-        onPanResponderMove: Animated.event([
-          null, { dx: this.state.pan.x, dy: this.state.pan.y }
-        ])
-        // adjusting delta value
-        value.state.pan.setValue({ x:0, y:0})
-      });
-    }
-  
-    render() {
-      const panStyle = {
-        transform: this.state.pan.getTranslateTransform()
-      }
-      return (
-          <Animated.View
-            {...this.panResponder.panHandlers}
-            style={[panStyle, styles.circle]}
-          />
-      );
-    }
-  }
+
 
 
 const styles = StyleSheet.create({
